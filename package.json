@@ -4,7 +4,18 @@
   "private": true,
   "type": "module",
   "description": "Tiny serverless endpoint that returns HowLongToBeat main-story hours and box art for a game.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
   "dependencies": {
-    "howlongtobeat": "^1.8.0"
+    "howlongtobeat-ts": "^1.1.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.2",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "vite": "^8.0.14"
   }
 }
