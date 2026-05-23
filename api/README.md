@@ -9,23 +9,29 @@ on your machine once deployed.
 ```
 backlog-api/
 ├── api/
-│   └── playtime.js   ← the serverless function
-└── package.json      ← declares the howlongtobeat dependency
+│   └── playtime.js        ← the serverless function
+├── src/
+│   ├── main.jsx           ← Vite entry point (window.storage polyfill)
+│   └── App.jsx            ← the React front-end (built by Vite)
+├── artifacts/
+│   └── backlog.jsx        ← original Claude Artifact version (reference only)
+├── index.html             ← Vite HTML shell
+├── vite.config.js         ← Vite + React config with /api proxy for local dev
+└── package.json           ← dependencies + build scripts
 ```
 
-The app itself is the separate `backlog.jsx` artifact in Claude — you don't deploy
-that, you just paste the endpoint URL into it (see step 4).
+The front-end is built by Vite and served as static files. The API runs as a
+Vercel serverless function. The `artifacts/backlog.jsx` is the original Claude
+Artifact version kept for reference — it is not deployed.
 
 ## Deploy to Vercel (free, ~3 minutes)
 
-1. **Make a GitHub repo** with the two files above, keeping the exact folder layout
-   (`api/playtime.js` and `package.json` at the root). You can drag them into a new
-   repo via github.com → "Add file" → "Upload files".
+1. **Push this repo** to GitHub (keep the folder layout as-is).
 
 2. **Sign in to vercel.com** with your GitHub account (free Hobby plan).
 
-3. **New Project → Import** your repo → **Deploy**. Vercel auto-detects it, runs
-   `npm install` (pulls in `howlongtobeat`), and gives you a URL like
+3. **New Project → Import** your repo → **Deploy**. Vercel auto-detects Vite,
+   runs `npm install` and `npm run build`, and gives you a URL like
    `https://your-app.vercel.app`. No build settings to change, no env vars needed.
 
 4. **Your endpoint** is that URL plus `/api/playtime`, e.g.
@@ -34,10 +40,10 @@ that, you just paste the endpoint URL into it (see step 4).
    `https://your-app.vercel.app/api/playtime?game=Hades`
    You should get JSON back with `hours` and `imageUrl`.
 
-5. **Connect the app:** open the backlog artifact, tap **⚙ set lookup endpoint**,
-   paste the `/api/playtime` URL, done. From now on every game you add fills in hours
-   and box art automatically. Anything HLTB has no time for (e.g. an unreleased game)
-   shows "tap to enter" so you can set it by hand.
+5. **Use the app:** visit `https://your-app.vercel.app` to open the front-end.
+   Tap **⚙ set lookup endpoint** and paste the `/api/playtime` URL (e.g.
+   `https://your-app.vercel.app/api/playtime`). From now on every game you add
+   fills in hours and box art automatically.
 
 ## Notes
 
