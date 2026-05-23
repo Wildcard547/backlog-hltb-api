@@ -1,9 +1,9 @@
 // Vercel serverless function: GET /api/playtime?game=<name>
-// Looks up a game on HowLongToBeat (via ckatzorke/howlongtobeat) and returns
+// Looks up a game on HowLongToBeat (via howlongtobeat-ts) and returns
 // a single main-story hours figure plus box art, with permissive CORS so the
 // browser app can read it.
 
-import { HowLongToBeatService } from "howlongtobeat";
+import { HowLongToBeatService } from "howlongtobeat-ts";
 
 const hltb = new HowLongToBeatService();
 
@@ -27,33 +27,31 @@ export default async function handler(req, res) {
   }
 
   try {
-    const results = await hltb.search(game);
+    const response = await hltb.search(game);
+    const results = response && response.data;
 
     if (!results || results.length === 0) {
-      // No HLTB entry at all (or a brand-new/unlisted title).
       res.status(200).json({ found: false, query: game, name: game, hours: null, imageUrl: null });
       return;
     }
 
-    // Pick the closest match by HLTB's similarity score.
     const best = results.reduce((a, b) => (b.similarity > a.similarity ? b : a));
 
-    // Normalize the image URL (library sometimes returns a relative path).
     let img = best.imageUrl || null;
     if (img && !/^https?:\/\//.test(img)) {
       img = "https://howlongtobeat.com/" + String(img).replace(/^\/+/, "");
     }
 
-    // gameplayMain is the main-story figure; 0 means HLTB has no time yet.
-    const hours = best.gameplayMain && best.gameplayMain > 0 ? best.gameplayMain : null;
+    // mainTime is in seconds; convert to hours, rounded to one decimal.
+    const toHours = (s) => (s && s > 0 ? Math.round((s / 3600) * 10) / 10 : null);
 
     res.status(200).json({
       found: true,
       query: game,
       name: best.name,
-      hours,
-      mainExtra: best.gameplayMainExtra || null,
-      completionist: best.gameplayCompletionist || null,
+      hours: toHours(best.mainTime),
+      mainExtra: toHours(best.mainExtraTime),
+      completionist: toHours(best.completionistTime),
       imageUrl: img,
       similarity: best.similarity,
       hltbId: best.id,

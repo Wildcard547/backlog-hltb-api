@@ -44,7 +44,7 @@ that, you just paste the endpoint URL into it (see step 4).
 - **Response shape:** `{ found, name, hours, mainExtra, completionist, imageUrl, similarity, hltbId }`.
   The app uses `hours` (main story) and `imageUrl`.
 - **Caching:** results are cached at Vercel's edge for a day to stay light on HLTB.
-- **Fragility:** `howlongtobeat` is an unofficial scraper. If HLTB changes their site
+- **Fragility:** `howlongtobeat-ts` is an unofficial scraper. If HLTB changes their site
   it can break until the maintainer pushes a fix — then you just bump the version in
   `package.json` and redeploy. For a personal tool this is a low risk.
 - **Alternative hosts:** the same `api/playtime.js` works on Netlify Functions or any
