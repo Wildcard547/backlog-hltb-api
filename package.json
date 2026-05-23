@@ -1,0 +1,10 @@
+{
+  "name": "backlog-hltb-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tiny serverless endpoint that returns HowLongToBeat main-story hours and box art for a game.",
+  "dependencies": {
+    "howlongtobeat": "^1.8.0"
+  }
+}
